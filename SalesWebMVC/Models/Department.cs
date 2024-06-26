@@ -2,6 +2,7 @@
 
 namespace SalesWebMVC.Models
 {
+    // OBS: Entidade de domínio implementada manualmente, sobrescreve hashcode e equals
     public class Department
     {
         public int Id { get; set; }
