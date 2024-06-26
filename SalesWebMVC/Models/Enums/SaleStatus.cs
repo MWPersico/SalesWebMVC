@@ -1,6 +1,6 @@
 ﻿namespace SalesWebMVC.Models.Enums
 {
-    public enum SaleStatus
+    public enum SaleStatus : byte
     {
         PENDING = 0,
         BILLED = 1,
