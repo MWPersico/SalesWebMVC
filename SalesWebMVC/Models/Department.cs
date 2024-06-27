@@ -29,7 +29,7 @@ namespace SalesWebMVC.Models
         // TODO
         public double TotalSales(DateTime initial, DateTime final)
         {
-            return 0.0;
+            return Sellers.Sum(s => s.TotalSales(initial, final));
         }
 
         public override bool Equals(object? obj)

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace SalesWebMVC.Models
 {
@@ -33,6 +34,23 @@ namespace SalesWebMVC.Models
             if (obj == null) return false;
             Seller seller = (Seller) obj;
             return seller.Id == Id;
+        }
+
+        public void AddSales(SalesRecord sales)
+        {
+            Sales.Add(sales);
+        }
+
+        public void RemoveSales(SalesRecord sales)
+        {
+            Sales.Remove(sales);
+        }
+
+        public double TotalSales(DateTime initial, DateTime final)
+        {
+            return Sales
+                .Where(s => s.Date >= initial && s.Date <= final)
+                .Sum(s => s.Amount);
         }
     }
 }
