@@ -12,21 +12,19 @@ namespace SalesWebMVC.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int Id { get; private set; }
         public string Name { get; set; }
         public virtual ISet<Seller> Sellers { get; set; } = new HashSet<Seller>();
 
         public Department() { }
 
-        public Department(int id, string name) { Id = id; Name = name; }
+        public Department(string name) { Name = name; }
 
-        // TODO
         public void AddSeller(Seller seller)
         {
             Sellers.Add(seller);
         }
 
-        // TODO
         public double TotalSales(DateTime initial, DateTime final)
         {
             return Sellers.Sum(s => s.TotalSales(initial, final));

@@ -9,19 +9,21 @@ namespace SalesWebMVC.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int Id { get; private set; }
         public string Name { get; set; }
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
+        [DataType(DataType.Date)]
         public DateTime BirthDate { get; set; }
+        [DataType(DataType.Currency)]
         public double Salary { get; set; }
         public Department Department { get; set; }
         public virtual ISet<SalesRecord> Sales { get; set; } = new HashSet<SalesRecord>();
 
         public Seller(){}
 
-        public Seller(int id, string name, string email, DateTime birthDate, double salary, Department department)
+        public Seller(string name, string email, DateTime birthDate, double salary, Department department)
         {
-            Id = id;
             Name = name;
             Email = email;
             BirthDate = birthDate;
