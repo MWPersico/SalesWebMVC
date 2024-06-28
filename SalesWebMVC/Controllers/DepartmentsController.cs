@@ -30,7 +30,7 @@ namespace SalesWebMVC.Controllers
         // GET: Departments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (!_service.DepartmentExists(id ?? -1))
+            if (!_service.EntityExists(id ?? -1))
                 return NotFound();
 
             Department department = await _service.Find(id);
@@ -60,7 +60,7 @@ namespace SalesWebMVC.Controllers
         // GET: Departments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if(!_service.DepartmentExists(id ?? -1))
+            if(!_service.EntityExists(id ?? -1))
                 return NotFound();
 
             Department department = await _service.Find(id);
@@ -72,7 +72,7 @@ namespace SalesWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Department department)
         {
-            if (id != department.Id || !_service.DepartmentExists(id))
+            if (id != department.Id || !_service.EntityExists(id))
                 return NotFound();
 
             if (!ModelState.IsValid)
@@ -85,7 +85,7 @@ namespace SalesWebMVC.Controllers
         // GET: Departments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if(!_service.DepartmentExists(id ?? -1))
+            if(!_service.EntityExists(id ?? -1))
                 return NotFound();
 
             Department department = await _service.Find(id);
@@ -97,7 +97,7 @@ namespace SalesWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if(!_service.DepartmentExists(id))
+            if(!_service.EntityExists(id))
                 return NotFound();
 
             await _service.Delete(id);

@@ -8,7 +8,7 @@ namespace SalesWebMVC.Services
     public abstract class GenericService<TEntity, TKey> : IGenericService<TEntity, TKey> where TEntity : class
     {
         protected readonly SalesWebMVCContext _context;
-        public GenericService() { }
+        protected GenericService() { }
 
         public GenericService(SalesWebMVCContext context)
         {
@@ -20,7 +20,7 @@ namespace SalesWebMVC.Services
             return await _context.Set<TEntity>().ToListAsync();
         }
 
-        public virtual async Task<TEntity> Find(TKey key)
+        public virtual async Task<TEntity> Find(TKey? key)
         {
             if (!EntityExists(key))
                 throw new KeyNotFoundException();

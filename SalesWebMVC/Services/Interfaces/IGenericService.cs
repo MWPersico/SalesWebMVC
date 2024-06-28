@@ -4,7 +4,7 @@
     public interface IGenericService<TEntity, TKey> where TEntity : class
     {
         public Task<IList<TEntity>> FindAll();
-        public Task<TEntity> Find(TKey? key);
+        public Task<TEntity> Find(TKey key);
         public Task Create(TEntity entity);
         public Task Update(TEntity entity);
         public Task Delete(TKey key);

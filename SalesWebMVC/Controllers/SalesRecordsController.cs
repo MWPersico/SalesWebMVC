@@ -29,7 +29,7 @@ namespace SalesWebMVC.Controllers
         // GET: SalesRecords/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (!_service.SalesRecordExists(id ?? -1))
+            if (!_service.EntityExists(id ?? -1))
                 return NotFound();
 
             SalesRecord salesRecord = await _service.Find(id);
@@ -59,7 +59,7 @@ namespace SalesWebMVC.Controllers
         // GET: SalesRecords/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (!_service.SalesRecordExists(id ?? -1))
+            if (!_service.EntityExists(id ?? -1))
                 return NotFound();
 
             SalesRecord salesRecord = await _service.Find(id);
@@ -81,7 +81,7 @@ namespace SalesWebMVC.Controllers
         // GET: SalesRecords/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if(!_service.SalesRecordExists(id ?? -1))
+            if(!_service.EntityExists(id ?? -1))
                 return NotFound();
 
             SalesRecord salesRecord = await _service.Find(id);
@@ -93,7 +93,7 @@ namespace SalesWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (!_service.SalesRecordExists(id))
+            if (!_service.EntityExists(id))
                 return NotFound();
 
             await _service.Delete(id);
