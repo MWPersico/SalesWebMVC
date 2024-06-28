@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SalesWebMVC.Data;
+﻿using SalesWebMVC.Data;
 using SalesWebMVC.Models;
 
 namespace SalesWebMVC.Services

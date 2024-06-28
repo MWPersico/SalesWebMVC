@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace SalesWebMVC.Models
 {

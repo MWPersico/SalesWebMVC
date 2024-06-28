@@ -1,106 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using SalesWebMVC.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using SalesWebMVC.Models;
 using SalesWebMVC.Services;
 
 namespace SalesWebMVC.Controllers
 {
     // OBS: Classe Controlle gerado apartir de modelo MVC com operações básicas, integrado ao Entity Framework: add>new scaffolded file>mvc controller with views, using entity framework 
-    public class DepartmentsController : Controller
+    public class DepartmentsController : GenericController<Department, int?>
     {
-        private readonly DepartmentService _service;
+        public DepartmentsController(DepartmentService service):base(service){}
 
-        public DepartmentsController(DepartmentService service)
+        public override async Task<IActionResult> Create([Bind("Id,Name")] Department department)
         {
-            _service = service;
-        }
-
-        // GET: Departments
-        public async Task<IActionResult> Index()
-        {
-            return View(await _service.FindAll());
-        }
-
-        // GET: Departments/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (!_service.EntityExists(id ?? -1))
-                return NotFound();
-
-            Department department = await _service.Find(id);
-            return View(department);
-        }
-
-        // GET: Departments/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Departments/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Department department)
-        {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return View(department);
 
-            await _service.Create(department);
+            await Service.Create(department);
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Departments/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public override async Task<IActionResult> Edit(int? id, [Bind("Id,Name")] Department department)
         {
-            if(!_service.EntityExists(id ?? -1))
-                return NotFound();
-
-            Department department = await _service.Find(id);
-            return View(department);
-        }
-
-        // POST: Departments/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Department department)
-        {
-            if (id != department.Id || !_service.EntityExists(id))
+            if (id != department.Id || !Service.EntityExists(id))
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return View(department);
 
-            await _service.Update(department);
-            return RedirectToAction(nameof(Index));
-        }
-
-        // GET: Departments/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if(!_service.EntityExists(id ?? -1))
-                return NotFound();
-
-            Department department = await _service.Find(id);
-            return View(department);
-        }
-
-        // POST: Departments/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if(!_service.EntityExists(id))
-                return NotFound();
-
-            await _service.Delete(id);
+            await Service.Update(id, department);
             return RedirectToAction(nameof(Index));
         }
     }

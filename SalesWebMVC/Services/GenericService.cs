@@ -1,23 +1,17 @@
-﻿using System.CodeDom;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SalesWebMVC.Data;
 using SalesWebMVC.Services.Interfaces;
 
 namespace SalesWebMVC.Services
 {
-    public abstract class GenericService<TEntity, TKey> : IGenericService<TEntity, TKey> where TEntity : class
+    public abstract class GenericService<TEntity, TKey>(SalesWebMVCContext context) : IGenericService<TEntity, TKey>
+        where TEntity : class
     {
-        protected readonly SalesWebMVCContext _context;
-        protected GenericService() { }
-
-        public GenericService(SalesWebMVCContext context)
-        {
-            _context = context;
-        }
+        protected readonly SalesWebMVCContext Context = context;
 
         public virtual async Task<IList<TEntity>> FindAll()
         {
-            return await _context.Set<TEntity>().ToListAsync();
+            return await Context.Set<TEntity>().ToListAsync();
         }
 
         public virtual async Task<TEntity> Find(TKey? key)
@@ -25,30 +19,30 @@ namespace SalesWebMVC.Services
             if (!EntityExists(key))
                 throw new KeyNotFoundException();
 
-            return await _context.Set<TEntity>().FindAsync(key);
+            return await Context.Set<TEntity>().FindAsync(key);
         }
 
         public virtual async Task Create(TEntity entity)
         {
-            await _context.Set<TEntity>().AddAsync(entity);
-            await _context.SaveChangesAsync();
+            await Context.Set<TEntity>().AddAsync(entity);
+            await Context.SaveChangesAsync();
         }
 
-        public virtual async Task Update(TEntity entity)
+        public virtual async Task Update(TKey key, TEntity entity)
         {
-            _context.Set<TEntity>().Update(entity);
-            await _context.SaveChangesAsync();
+            Context.Entry(await Find(key)).CurrentValues.SetValues(entity);
+            await Context.SaveChangesAsync();
         }
 
         public virtual async Task Delete(TKey key)
         {
-            _context.Set<TEntity>().Remove(await Find(key));
-            await _context.SaveChangesAsync();
+            Context.Set<TEntity>().Remove(await Find(key));
+            await Context.SaveChangesAsync();
         }
 
         public virtual bool EntityExists(TKey key)
         {
-            return _context.Set<TEntity>().Find(key) != null;
+            return Context.Set<TEntity>().Find(key) != null;
         }
     }
 }

@@ -6,7 +6,7 @@
         public Task<IList<TEntity>> FindAll();
         public Task<TEntity> Find(TKey key);
         public Task Create(TEntity entity);
-        public Task Update(TEntity entity);
+        public Task Update(TKey key, TEntity entity);
         public Task Delete(TKey key);
         public bool EntityExists(TKey key);
     }
