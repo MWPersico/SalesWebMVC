@@ -94,7 +94,6 @@ namespace SalesWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-
             if (!_service.SellerExists(id))
                 return NotFound();
 
