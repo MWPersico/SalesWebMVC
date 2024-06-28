@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SalesWebMVC.Data;
+using SalesWebMVC.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<SalesWebMVCContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SalesWebMVCContext") ?? throw new InvalidOperationException("Connection string 'SalesWebMVCContext' not found.")));
@@ -8,6 +10,7 @@ builder.Services.AddDbContext<SalesWebMVCContext>(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<SeedingService>();
+builder.Services.AddScoped<SellerService>();
 
 var app = builder.Build();
 

@@ -12,7 +12,7 @@ namespace SalesWebMVC.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; private set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public virtual ISet<Seller> Sellers { get; set; } = new HashSet<Seller>();
 

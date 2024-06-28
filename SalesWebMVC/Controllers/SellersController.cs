@@ -1,45 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SalesWebMVC.Data;
 using SalesWebMVC.Models;
+using SalesWebMVC.Services;
 
 namespace SalesWebMVC.Controllers
 {
     public class SellersController : Controller
     {
-        private readonly SalesWebMVCContext _context;
+        private readonly SellerService _service;
 
-        public SellersController(SalesWebMVCContext context)
+        public SellersController(SellerService service)
         {
-            _context = context;
+            _service = service;
         }
 
         // GET: Sellers
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Seller.ToListAsync());
+            IList<Seller> sellers = await _service.FindAll();
+            return View(sellers);
         }
 
         // GET: Sellers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
+            if (!_service.SellerExists(id ?? -1))
                 return NotFound();
-            }
 
-            var seller = await _context.Seller
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (seller == null)
-            {
-                return NotFound();
-            }
-
+            Seller seller = await _service.Find(id);
             return View(seller);
         }
 
@@ -54,83 +42,50 @@ namespace SalesWebMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Email,BirthDate,Salary")] Seller seller)
+        public async Task<IActionResult> Create([Bind("Id,Name,Email,BirthDate,Salary,Department")] Seller seller)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(seller);
-                await _context.SaveChangesAsync();
+                await _service.Create(seller);
                 return RedirectToAction(nameof(Index));
             }
+
             return View(seller);
         }
 
         // GET: Sellers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
+            if (!_service.SellerExists(id ?? -1))
                 return NotFound();
-            }
 
-            var seller = await _context.Seller.FindAsync(id);
-            if (seller == null)
-            {
-                return NotFound();
-            }
+            Seller seller = await _service.Find(id);
             return View(seller);
         }
 
         // POST: Sellers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // TODO: FIX NAVIGATION PROPERTY DEPARTMENT "null"
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Email,BirthDate,Salary")] Seller seller)
         {
-            if (id != seller.Id)
-            {
+            if (id != seller.Id || !_service.SellerExists(id)) 
                 return NotFound();
-            }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(seller);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SellerExists(seller.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(seller);
+            if (!ModelState.IsValid)
+                return View(seller);
+
+            await _service.Update(seller);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Sellers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
+            if (!_service.SellerExists(id??-1))
                 return NotFound();
-            }
 
-            var seller = await _context.Seller
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (seller == null)
-            {
-                return NotFound();
-            }
-
+            Seller seller = await _service.Find(id);
             return View(seller);
         }
 
@@ -139,19 +94,12 @@ namespace SalesWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var seller = await _context.Seller.FindAsync(id);
-            if (seller != null)
-            {
-                _context.Seller.Remove(seller);
-            }
 
-            await _context.SaveChangesAsync();
+            if (!_service.SellerExists(id))
+                return NotFound();
+
+            await _service.Delete(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool SellerExists(int id)
-        {
-            return _context.Seller.Any(e => e.Id == id);
         }
     }
 }

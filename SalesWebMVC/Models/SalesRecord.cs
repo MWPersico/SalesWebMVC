@@ -9,7 +9,7 @@ namespace SalesWebMVC.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; private set; }
+        public int Id { get; set; }
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
         [DataType(DataType.Currency)]

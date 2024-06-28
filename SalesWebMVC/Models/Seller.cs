@@ -9,7 +9,7 @@ namespace SalesWebMVC.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; private set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
