@@ -20,7 +20,7 @@ namespace SalesWebMVC.Services
 
         public async Task<Seller> Find(int? id)
         {
-            if (!SellerExists(id))
+            if (!SellerExists(id ?? -1))
                 throw new KeyNotFoundException();
 
             return await _context.Seller.FirstOrDefaultAsync(s => s.Id == id);
@@ -34,8 +34,7 @@ namespace SalesWebMVC.Services
 
         public async Task Delete(int id)
         {
-            Seller? seller = await Find(id);
-            _context.Seller.Remove(seller);
+            _context.Seller.Remove(await Find(id));
             await _context.SaveChangesAsync();
         }
 
