@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SalesWebMVC.Data;
+using SalesWebMVC.Services.Exceptions;
 using SalesWebMVC.Services.Interfaces;
 
 namespace SalesWebMVC.Services
@@ -17,7 +18,7 @@ namespace SalesWebMVC.Services
         public virtual async Task<TEntity> Find(TKey? key)
         {
             if (!EntityExists(key))
-                throw new KeyNotFoundException();
+                throw new ResourceNotFoundException(key.ToString());
 
             return await Context.Set<TEntity>().FindAsync(key);
         }
@@ -30,8 +31,15 @@ namespace SalesWebMVC.Services
 
         public virtual async Task Update(TKey key, TEntity entity)
         {
-            Context.Entry(await Find(key)).CurrentValues.SetValues(entity);
-            await Context.SaveChangesAsync();
+            try
+            {
+                Context.Entry(await Find(key)).CurrentValues.SetValues(entity);
+                await Context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw new DBConcurrencyException(ex.Message);
+            }
         }
 
         public virtual async Task Delete(TKey key)
