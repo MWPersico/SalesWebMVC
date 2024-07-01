@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SalesWebMVC.Controllers.Interfaces;
 using SalesWebMVC.Models.ViewModels;
+using SalesWebMVC.Services.Exceptions;
 using SalesWebMVC.Services.Interfaces;
 
 namespace SalesWebMVC.Controllers
@@ -68,8 +69,15 @@ namespace SalesWebMVC.Controllers
             if (!Service.EntityExists(id))
                 return RedirectToAction(nameof(Error), new { message = $"Resource with key {id} not found" });
 
-            await Service.Delete(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await Service.Delete(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbIntegrityException)
+            {
+                return RedirectToAction(nameof(Error), new { message = "DBIntegrityException: Unable to delete resource" });
+            }
         }
 
         public virtual IActionResult Error(string message)

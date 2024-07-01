@@ -20,13 +20,15 @@ namespace SalesWebMVC.Data
                 .HasOne(s => s.Department)
                 .WithMany(d => d.Sellers)
                 .HasForeignKey(s => s.DepartmentId)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<SalesRecord>()
                 .HasOne(sr => sr.Seller)
                 .WithMany(s => s.Sales)
                 .HasForeignKey(sr => sr.SellerId)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

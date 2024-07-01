@@ -13,10 +13,12 @@ namespace SalesWebMVC.Models
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
         [DataType(DataType.Date)]
+        [Display(Name="Birth Date")]
         public DateTime BirthDate { get; set; }
         [DataType(DataType.Currency)]
         public double Salary { get; set; }
         public Department? Department { get; set; }
+        [Display(Name="Department ID")]
         public int DepartmentId { get; set; }
         public virtual ISet<SalesRecord>? Sales { get; set; } = new HashSet<SalesRecord>();
 

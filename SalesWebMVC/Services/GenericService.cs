@@ -44,8 +44,15 @@ namespace SalesWebMVC.Services
 
         public virtual async Task Delete(TKey key)
         {
-            Context.Set<TEntity>().Remove(await Find(key));
-            await Context.SaveChangesAsync();
+            try
+            {
+                Context.Set<TEntity>().Remove(await Find(key));
+                await Context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new DbIntegrityException(ex.Message);
+            }
         }
 
         public virtual bool EntityExists(TKey key)
