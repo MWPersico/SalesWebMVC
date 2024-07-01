@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 using SalesWebMVC.Controllers.Interfaces;
+using SalesWebMVC.Models.ViewModels;
 using SalesWebMVC.Services.Interfaces;
 
 namespace SalesWebMVC.Controllers
@@ -30,7 +32,7 @@ namespace SalesWebMVC.Controllers
         public virtual async Task<IActionResult> Details(TKey id)
         {
             if (!Service.EntityExists(id))
-                return NotFound();
+                return RedirectToAction(nameof(Error), new {message = $"Resource with key {id} not found"});
 
             TEntity entity = await Service.Find(id);
             return View(entity);
@@ -44,7 +46,7 @@ namespace SalesWebMVC.Controllers
         public virtual async Task<IActionResult> Edit(TKey id)
         {
             if (!Service.EntityExists(id))
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = $"Resource with key {id} not found" });
 
             TEntity entity = await Service.Find(id);
             return View(entity);
@@ -53,7 +55,7 @@ namespace SalesWebMVC.Controllers
         public virtual async Task<IActionResult> Delete(TKey id)
         {
             if (!Service.EntityExists(id))
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = $"Resource with key {id} not found" });
 
             TEntity entity = await Service.Find(id);
             return View(entity);
@@ -64,10 +66,16 @@ namespace SalesWebMVC.Controllers
         public virtual async Task<IActionResult> DeleteConfirmed(TKey id)
         {
             if (!Service.EntityExists(id))
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = $"Resource with key {id} not found" });
 
             await Service.Delete(id);
             return RedirectToAction(nameof(Index));
+        }
+
+        public virtual IActionResult Error(string message)
+        {
+            ErrorViewModel viewModel = new ErrorViewModel(){Message = message, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier};
+            return View(viewModel);
         }
     }
 }

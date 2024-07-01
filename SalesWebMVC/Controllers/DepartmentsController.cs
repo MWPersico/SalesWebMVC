@@ -21,13 +21,20 @@ namespace SalesWebMVC.Controllers
         public override async Task<IActionResult> Edit(int? id, [Bind("Id,Name")] Department department)
         {
             if (id != department.Id || !Service.EntityExists(id))
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = $"Resource with key {id} not found" });
 
             if (!ModelState.IsValid)
                 return View(department);
 
-            await Service.Update(id, department);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await Service.Update(id, department);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (ApplicationException ex)
+            {
+                return RedirectToAction(nameof(Error), ex.Message);
+            }
         }
     }
 }

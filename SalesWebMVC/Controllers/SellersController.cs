@@ -25,7 +25,7 @@ namespace SalesWebMVC.Controllers
         public override async Task<IActionResult> Edit(int? id)
         {
             if (!Service.EntityExists(id))
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = $"Resource with key {id} not found" });
 
             Seller entity = await Service.Find(id);
             IList<Department> departments = await _departmentService.FindAll();
@@ -52,9 +52,15 @@ namespace SalesWebMVC.Controllers
 
             if (!ModelState.IsValid)
                 return View(seller);
-
-            await Service.Update(id, seller);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await Service.Update(id, seller);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (ApplicationException ex)
+            {
+                return RedirectToAction(nameof(Error), ex.Message);
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 using SalesWebMVC.Models;
 using SalesWebMVC.Models.ViewModels;
 using SalesWebMVC.Services;
+using SalesWebMVC.Services.Exceptions;
 
 namespace SalesWebMVC.Controllers
 {
@@ -24,7 +25,7 @@ namespace SalesWebMVC.Controllers
         public override async Task<IActionResult> Edit(int? id)
         {
             if (!Service.EntityExists(id))
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = $"Resource with key {id} not found" });
 
             SalesRecord entity = await Service.Find(id);
             SalesRecordFormViewModel viewModel = new SalesRecordFormViewModel()
@@ -55,8 +56,15 @@ namespace SalesWebMVC.Controllers
                 return View(viewModel);
             }
 
-            await Service.Update(id, salesRecord);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await Service.Update(id, salesRecord);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (ApplicationException ex)
+            {
+                return RedirectToAction(nameof(Error), ex.Message);
+            }
         }
     }
 }
