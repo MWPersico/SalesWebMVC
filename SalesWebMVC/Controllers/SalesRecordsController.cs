@@ -15,6 +15,28 @@ namespace SalesWebMVC.Controllers
             _sellerService = sellerService;
         }
 
+        public async Task<IActionResult> SimpleSearch(DateTime? minDate, DateTime? maxDate)
+        {
+            minDate = minDate ?? new DateTime(DateTime.Now.Year-8, 1, 1);
+            maxDate = maxDate ?? DateTime.Now;
+
+            IEnumerable<SalesRecord> sales = await ((SalesRecordService)Service).FindByDate(minDate.Value, maxDate.Value);
+            ViewData["minDate"] = minDate.Value.ToString("yyyy-MM-dd");
+            ViewData["maxDate"] = maxDate.Value.ToString("yyyy-MM-dd");
+            return View(sales);
+        }
+
+        public IActionResult GroupSearch(DateTime? minDate, DateTime? maxDate)
+        {
+            minDate = minDate ?? new DateTime(DateTime.Now.Year - 8, 1, 1);
+            maxDate = maxDate ?? DateTime.Now;
+
+            IEnumerable<IGrouping<Department, SalesRecord>> sales = ((SalesRecordService)Service).FindGroupedByDepartment(minDate.Value, maxDate.Value);
+            ViewData["minDate"] = minDate.Value.ToString("yyyy-MM-dd");
+            ViewData["maxDate"] = maxDate.Value.ToString("yyyy-MM-dd");
+            return View(sales);
+        }
+
         public override IActionResult Create()
         {
             IList<Seller> sellers = _sellerService.FindAll().Result;
