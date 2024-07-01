@@ -1,32 +1,45 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SalesWebMVC.Models;
+using SalesWebMVC.Models.ViewModels;
 using SalesWebMVC.Services;
 
 namespace SalesWebMVC.Controllers
 {
     public class SalesRecordsController : GenericController<SalesRecord, int?>
     {
-        private readonly SalesRecordService _service;
+        private readonly SellerService _sellerService;
 
-        public SalesRecordsController(SalesRecordService service):base(service){}
+        public SalesRecordsController(SalesRecordService service, SellerService sellerService) : base(service)
+        {
+            _sellerService = sellerService;
+        }
 
-        // TODO: RESOLVER PROBLEMA DE MATCHING DO MODELO, entidade Department "nula"
-        public override async Task<IActionResult> Create([Bind("Id,Date,Amount,Status")] SalesRecord salesRecord)
+        public override IActionResult Create()
+        {
+            IList<Seller> sellers = _sellerService.FindAll().Result;
+            SalesRecordFormViewModel viewModel = new SalesRecordFormViewModel() { Sellers = sellers };
+            return View(viewModel);
+        }
+
+        public override async Task<IActionResult> Create(SalesRecord salesRecord)
         {
             if (!ModelState.IsValid)
-                return View(salesRecord);
+            {
+                SalesRecordFormViewModel viewModel = new SalesRecordFormViewModel(){SalesRecord = salesRecord, Sellers = await _sellerService.FindAll()};
+                return View(viewModel);
+            }
+                
 
-            await _service.Create(salesRecord);
+            await Service.Create(salesRecord);
             return RedirectToAction(nameof(Index));
         }
 
-        // TODO: RESOLVER PROBLEMA DE MATCHING DO MODELO, entidade Department "nula"
         public override async Task<IActionResult> Edit(int? id, [Bind("Id,Date,Amount,Status")] SalesRecord salesRecord)
         {
             if(id != salesRecord.Id || !ModelState.IsValid)
                 return View(salesRecord);
 
-            await _service.Update(id, salesRecord);
+            await Service.Update(id, salesRecord);
             return RedirectToAction(nameof(Index));
         }
     }

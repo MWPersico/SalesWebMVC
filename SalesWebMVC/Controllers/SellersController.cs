@@ -22,7 +22,6 @@ namespace SalesWebMVC.Controllers
             return View(viewModel);
         }
 
-        // TODO: RESOLVER PROBLEMA DE MATCHING DO MODELO, entidade Department "nula"
         public override async Task<IActionResult> Create(Seller seller)
         {
             if (ModelState.IsValid)
@@ -35,7 +34,6 @@ namespace SalesWebMVC.Controllers
             return View(viewModel);
         }
 
-        // TODO: RESOLVER PROBLEMA DE MATCHING DO MODELO, entidade Department "nula"
         public override async Task<IActionResult> Edit(int? id, [Bind("Id,Name,Email,BirthDate,Salary")] Seller seller)
         {
             if (id != seller.Id || !Service.EntityExists(id)) 
