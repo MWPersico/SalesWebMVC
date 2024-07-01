@@ -16,9 +16,9 @@ namespace SalesWebMVC.Models
         public DateTime BirthDate { get; set; }
         [DataType(DataType.Currency)]
         public double Salary { get; set; }
-        public Department Department { get; set; }
+        public Department? Department { get; set; }
         public int DepartmentId { get; set; }
-        public virtual ISet<SalesRecord> Sales { get; set; } = new HashSet<SalesRecord>();
+        public virtual ISet<SalesRecord>? Sales { get; set; } = new HashSet<SalesRecord>();
 
         public Seller(){}
 

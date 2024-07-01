@@ -22,12 +22,12 @@ namespace SalesWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public abstract Task<IActionResult> Edit(TKey id, TEntity entity);
 
-        public async Task<IActionResult> Index()
+        public virtual async Task<IActionResult> Index()
         {
             return View(await Service.FindAll());
         }
 
-        public async Task<IActionResult> Details(TKey id)
+        public virtual async Task<IActionResult> Details(TKey id)
         {
             if (!Service.EntityExists(id))
                 return NotFound();
@@ -36,12 +36,12 @@ namespace SalesWebMVC.Controllers
             return View(entity);
         }
 
-        public IActionResult Create()
+        public virtual IActionResult Create()
         {
             return View();
         }
 
-        public async Task<IActionResult> Edit(TKey id)
+        public virtual async Task<IActionResult> Edit(TKey id)
         {
             if (!Service.EntityExists(id))
                 return NotFound();
@@ -50,7 +50,7 @@ namespace SalesWebMVC.Controllers
             return View(entity);
         }
 
-        public async Task<IActionResult> Delete(TKey id)
+        public virtual async Task<IActionResult> Delete(TKey id)
         {
             if (!Service.EntityExists(id))
                 return NotFound();
@@ -61,7 +61,7 @@ namespace SalesWebMVC.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(TKey id)
+        public virtual async Task<IActionResult> DeleteConfirmed(TKey id)
         {
             if (!Service.EntityExists(id))
                 return NotFound();

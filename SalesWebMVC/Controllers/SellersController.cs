@@ -1,15 +1,29 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SalesWebMVC.Models;
+using SalesWebMVC.Models.ViewModels;
 using SalesWebMVC.Services;
 
 namespace SalesWebMVC.Controllers
 {
     public class SellersController : GenericController<Seller,int?>
     {
-        public SellersController(SellerService service):base(service){}
+        private DepartmentService _departmentService;
+        public SellersController(SellerService service, DepartmentService departmentService) : base(service)
+        {
+            _departmentService = departmentService;
+        }
+
+        public override IActionResult Create()
+        {
+            // loading departments for select field
+            IList<Department> departments = _departmentService.FindAll().Result;
+            SellerFormViewModel viewModel = new SellerFormViewModel(){Departments = departments};
+
+            return View(viewModel);
+        }
 
         // TODO: RESOLVER PROBLEMA DE MATCHING DO MODELO, entidade Department "nula"
-        public override async Task<IActionResult> Create([Bind("Id,Name,Email,BirthDate,Salary,Department")] Seller seller)
+        public override async Task<IActionResult> Create(Seller seller)
         {
             if (ModelState.IsValid)
             {
@@ -17,7 +31,8 @@ namespace SalesWebMVC.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(seller);
+            SellerFormViewModel viewModel = new SellerFormViewModel() { Departments = await _departmentService.FindAll(), Seller = seller };
+            return View(viewModel);
         }
 
         // TODO: RESOLVER PROBLEMA DE MATCHING DO MODELO, entidade Department "nula"
