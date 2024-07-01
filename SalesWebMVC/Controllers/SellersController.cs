@@ -22,6 +22,17 @@ namespace SalesWebMVC.Controllers
             return View(viewModel);
         }
 
+        public override async Task<IActionResult> Edit(int? id)
+        {
+            if (!Service.EntityExists(id))
+                return NotFound();
+
+            Seller entity = await Service.Find(id);
+            IList<Department> departments = await _departmentService.FindAll();
+            SellerFormViewModel viewModel = new SellerFormViewModel() {Departments = departments, Seller = entity};
+            return View(viewModel);
+        }
+
         public override async Task<IActionResult> Create(Seller seller)
         {
             if (ModelState.IsValid)
@@ -34,7 +45,7 @@ namespace SalesWebMVC.Controllers
             return View(viewModel);
         }
 
-        public override async Task<IActionResult> Edit(int? id, [Bind("Id,Name,Email,BirthDate,Salary")] Seller seller)
+        public override async Task<IActionResult> Edit(int? id, [Bind("Id,Name,Email,BirthDate,Salary,DepartmentId")] Seller seller)
         {
             if (id != seller.Id || !Service.EntityExists(id)) 
                 return NotFound();

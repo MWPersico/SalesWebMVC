@@ -1,4 +1,5 @@
-﻿@model SalesWebMVC.Models.SalesRecord
+﻿@using SalesWebMVC.Models;
+@model SalesWebMVC.Models.ViewModels.SalesRecordFormViewModel;
 
 @{
     ViewData["Title"] = "Edit";
@@ -12,23 +13,34 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="SalesRecord.Id" />
             <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" />
-                <span asp-validation-for="Date" class="text-danger"></span>
+                <label asp-for="SalesRecord.Date" class="control-label"></label>
+                <input asp-for="SalesRecord.Date" class="form-control" />
+                <span asp-validation-for="SalesRecord.Date" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Amount" class="control-label"></label>
-                <input asp-for="Amount" class="form-control" />
-                <span asp-validation-for="Amount" class="text-danger"></span>
+                <label asp-for="SalesRecord.Amount" class="control-label"></label>
+                <div class="form-group">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
+                        </div>
+                        <input asp-for="SalesRecord.Amount" class="form-control" type="number" />
+                        <span asp-validation-for="SalesRecord.Amount" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
             <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<SalesWebMVC.Models.Enums.SaleStatus>()">
+                <label asp-for="SalesRecord.Status" class="control-label"></label>
+                <select asp-for="SalesRecord.Status" class="form-control" asp-items="Html.GetEnumSelectList<SalesWebMVC.Models.Enums.SaleStatus>()">
                     <option selected disabled>Select Status</option>
                 </select>
-                <span asp-validation-for="Status" class="text-danger"></span>
+                <span asp-validation-for="SalesRecord.Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SalesRecord.SellerId" class="control-label"></label>
+                <select asp-for="SalesRecord.SellerId" asp-items="@(new SelectList(Model.Sellers, nameof(Seller.Id), nameof(Seller.Name)))" class="form-control"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

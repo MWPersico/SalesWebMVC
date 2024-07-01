@@ -21,6 +21,17 @@ namespace SalesWebMVC.Controllers
             return View(viewModel);
         }
 
+        public override async Task<IActionResult> Edit(int? id)
+        {
+            if (!Service.EntityExists(id))
+                return NotFound();
+
+            SalesRecord entity = await Service.Find(id);
+            SalesRecordFormViewModel viewModel = new SalesRecordFormViewModel()
+                { SalesRecord = entity, Sellers = await _sellerService.FindAll() };
+            return View(viewModel);
+        }
+
         public override async Task<IActionResult> Create(SalesRecord salesRecord)
         {
             if (!ModelState.IsValid)
@@ -34,10 +45,15 @@ namespace SalesWebMVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public override async Task<IActionResult> Edit(int? id, [Bind("Id,Date,Amount,Status")] SalesRecord salesRecord)
+        public override async Task<IActionResult> Edit(int? id, [Bind("Id,Date,Amount,Status,SellerId")] SalesRecord salesRecord)
         {
-            if(id != salesRecord.Id || !ModelState.IsValid)
-                return View(salesRecord);
+            if (id != salesRecord.Id || !ModelState.IsValid)
+            {
+                SalesRecord entity = await Service.Find(id);
+                SalesRecordFormViewModel viewModel = new SalesRecordFormViewModel()
+                    { SalesRecord = entity, Sellers = await _sellerService.FindAll() };
+                return View(viewModel);
+            }
 
             await Service.Update(id, salesRecord);
             return RedirectToAction(nameof(Index));

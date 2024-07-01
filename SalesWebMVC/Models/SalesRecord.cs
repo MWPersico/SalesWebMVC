@@ -27,12 +27,15 @@ namespace SalesWebMVC.Models
             Status = status;
             Seller = seller;
         }
-
         public override bool Equals(object? obj)
         {
             if(obj == null)return false;
             SalesRecord salesRecord = (SalesRecord)obj;
             return salesRecord.Id == Id;
+        }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

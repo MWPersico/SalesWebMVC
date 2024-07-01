@@ -35,5 +35,10 @@ namespace SalesWebMVC.Models
             Department department = (Department)obj;
             return department.Id == Id;
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

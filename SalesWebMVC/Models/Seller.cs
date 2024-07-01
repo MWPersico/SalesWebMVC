@@ -38,6 +38,11 @@ namespace SalesWebMVC.Models
             return seller.Id == Id;
         }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
         public void AddSales(SalesRecord sales)
         {
             Sales.Add(sales);
